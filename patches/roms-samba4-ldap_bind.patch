@@ -1,0 +1,46 @@
+*** a/source4/ldap_server/ldap_bind.c.ori	2018-07-12 10:23:36.000000000 +0200
+--- b/source4/ldap_server/ldap_bind.c	2018-12-18 17:40:35.924790627 +0100
+***************
+*** 161,166 ****
+--- 161,168 ----
+  	NTSTATUS status;
+  	bool using_tls = call->conn->sockets.active == call->conn->sockets.tls;
+  	struct tevent_req *subreq = NULL;
++ 	const char *roms_dn = NULL;
++ 	const char *roms_realm = lpcfg_realm(call->conn->lp_ctx);
+  
+  	DEBUG(10, ("BindSimple dn: %s\n",req->dn));
+  
+***************
+*** 181,186 ****
+--- 183,195 ----
+  		goto do_reply;
+  	}
+  
++ 	/* This allow binding without realm like Windows, and it append the default realm */
++ 	if ( strstr(req->dn, "@") == NULL && strstr(req->dn, "=") == NULL && strstr(req->dn, "\\") == NULL ) {
++ 		roms_dn = talloc_asprintf_append (req->dn, "@%s", roms_realm);
++ 	} else {
++ 		roms_dn = req->dn;
++ 	}
++ 
+  	subreq = authenticate_ldap_simple_bind_send(call,
+  					call->conn->connection->event.ctx,
+  					call->conn->connection->msg_ctx,
+***************
+*** 188,194 ****
+  					call->conn->connection->remote_address,
+  					call->conn->connection->local_address,
+  					using_tls,
+! 					req->dn,
+  					req->creds.password);
+  	if (subreq == NULL) {
+  		return NT_STATUS_NO_MEMORY;
+--- 197,203 ----
+  					call->conn->connection->remote_address,
+  					call->conn->connection->local_address,
+  					using_tls,
+! 					roms_dn,
+  					req->creds.password);
+  	if (subreq == NULL) {
+  		return NT_STATUS_NO_MEMORY;

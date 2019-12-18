@@ -1,0 +1,4 @@
+# Fins de ligne Unix partout
+* text=auto eol=lf
+# Patches conservés octet pour octet (md5 de patches/HORODATAGE.tsv)
+patches/*.patch -text

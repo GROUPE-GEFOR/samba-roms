@@ -1,0 +1,149 @@
+*** a/python/samba/netcmd/user.py.ori	2015-02-24 19:59:51.000000000 +0100
+--- b/python/samba/netcmd/user.py	2016-01-18 16:10:38.053666401 +0100
+***************
+*** 611,616 ****
+--- 611,744 ----
+          self.outf.write("Changed password OK\n")
+  
+  
++ class cmd_user_modify(Command):
++     """Modifies different attributes of the user
++ 
++ This command modifies some properties of an existing user account in the Active Directory domain.  The username specified on the command is the sAMaccountName.
++ 
++ User accounts may represent physical entities, such as people or may be used as service accounts for applications.  User accounts are also referred to as security principals and are assigned a security identifier (SID).
++ 
++ A user account enables a user to logon to a computer and domain with an identity that can be authenticated.  To maximize security, each user should have their own unique user account and password.  A user's access to domain resources is based on permissions assigned to the user account.
++ 
++ The command may be run from the root userid or another authorized userid.  The -H or --URL= option can be used to execute the command against a remote server.
++ 
++ Example1:
++ samba-tool user modify User1 --given-name=John --surname=Smith -H ldap://samba.samdom.example.com -Uadministrator%passw1rd
++ 
++ Example1 shows how to modify a user in the domain against a remote LDAP server.  The -H parameter is used to specify the remote target server.  The -U option is used to pass the userid and password authorized to issue the command remotely.
++ 
++ Example2:
++ sudo samba-tool user modify User2 --given-name=Jane --surname=Doe
++ 
++ Example2 shows how to modify a user in the domain against the local server.   sudo is used so a user may run the command as root.  In this example, after User2 is created, he/she will be forced to change their password when they logon.
++ 
++ Example3:
++ samba-tool user modify User3 --script-path=logon.bat
++ 
++ Example3 shows how to modify the logon script for the user.
++ 
++ Example4:
++ samba-tool user modify User4 --profile-path=""
++ 
++ Example4 shows how to remove the profile path for the user (forcing the use of the local profile).
++ 
++ """
++     synopsis = "%prog <username> [options]"
++     
++     takes_options = [
++         Option("-H", "--URL", help="LDB URL for database or target server", type=str,
++                 metavar="URL", dest="H"),
++         Option("--surname", help="User's surname", type=str),
++         Option("--given-name", help="User's given name", type=str),
++         Option("--initials", help="User's initials", type=str),
++         Option("--profile-path", help="User's profile path", type=str),
++         Option("--script-path", help="User's logon script path", type=str),
++         Option("--home-drive", help="User's home drive letter", type=str),
++         Option("--home-directory", help="User's home directory path", type=str),
++         Option("--job-title", help="User's job title", type=str),
++         Option("--department", help="User's department", type=str),
++         Option("--company", help="User's company", type=str),
++         Option("--description", help="User's description", type=str),
++         Option("--mail-address", help="User's email address", type=str),
++         Option("--internet-address", help="User's home page", type=str),
++         Option("--telephone-number", help="User's telephoneNumber", type=str),
++         Option("--mobile-number", help="User's mobile number", type=str),
++         Option("--home-number", help="User's homePhone number ", type=str),
++         Option("--pager-number", help="User's pager number", type=str),
++         Option("--fax-number", help="User's facsimileTelephoneNumber number", type=str),
++         Option("--ipphone-number", help="User's ipPhone number", type=str),
++         Option("--physical-delivery-office", help="User's office location", type=str),
++     ]
++     
++     takes_args = ["username"]
++     
++     takes_optiongroups = {
++         "sambaopts": options.SambaOptions,
++         "credopts": options.CredentialsOptions,
++         "versionopts": options.VersionOptions,
++         }
++     
++     def run(self, username, credopts=None, sambaopts=None, versionopts=None, H=None,
++             must_change_at_next_login=False, surname=None, given_name=None, initials=None,
++             profile_path=None, script_path=None, home_drive=None, home_directory=None,
++             job_title=None, department=None, company=None, description=None,
++             mail_address=None, internet_address=None, telephone_number=None,
++             mobile_number=None, home_number=None, pager_number=None, fax_number=None, ipphone_number=None,
++             physical_delivery_office=None):
++     
++         lp = sambaopts.get_loadparm()
++         creds = credopts.get_credentials(lp)
++         attributes = {}
++         attributes["sn"] = surname
++         attributes["givenName"] = given_name
++         attributes["initials"] = initials
++         attributes["profilePath"] = profile_path
++         attributes["scriptPath"] =  script_path
++         attributes["homeDrive"] =  home_drive
++         attributes["homeDirectory"] =  home_directory
++         attributes["title"] =  job_title
++         attributes["department"] =  department
++         attributes["company"] =  company
++         attributes["description"] =  description
++         attributes["mail"] =  mail_address
++         attributes["wWWHomePage"] =  internet_address
++         attributes["telephoneNumber"] =  telephone_number
++         attributes["mobile"] = mobile_number
++         attributes["homePhone"] = home_number
++         attributes["pager"] = pager_number
++         attributes["facsimileTelephoneNumber"] = fax_number
++         attributes["ipPhone"] = ipphone_number
++         attributes["physicalDeliveryOfficeName"] =  physical_delivery_office
++         
++         try:
++             samdb = SamDB(url=H, session_info=system_session(),
++                           credentials=creds, lp=lp)
++             domain_dn = samdb.domain_dn()
++             user_dn = samdb.search(base=domain_dn, scope=ldb.SCOPE_SUBTREE,
++                                   expression=("(&(objectClass=user)(sAMAccountName=%s))"
++                                   % (ldb.binary_encode(username))),
++                                   attrs=['dn'])
++             m = ldb.Message()
++             m.dn = user_dn[0]['dn']
++             for attr_name in attributes.keys():
++                 if attributes[attr_name] is not None:
++                     if attributes[attr_name] != "":
++                         m[attr_name] = ldb.MessageElement(
++                             str(attributes[attr_name]),
++                             ldb.FLAG_MOD_REPLACE,
++                             attr_name)
++                     else:
++                         m[attr_name] = ldb.MessageElement(
++                             [],
++                             ldb.FLAG_MOD_DELETE,
++                             attr_name)
++             samdb.modify(m)
++         except Exception as e:
++             raise CommandError("Failed to modify user '%s': " % username, e)
++         
++         self.outf.write("User '%s' modified successfully\n" % username)
++ 
++ 
+  class cmd_user(SuperCommand):
+      """User management."""
+  
+*** a/python/samba/netcmd/user.py.ori     2015-02-24 19:59:51.000000000 +0100
+--- b/python/samba/netcmd/user.py 2016-01-18 16:10:38.053666401 +0100
+***************
+*** 623,626 ****
+--- 2560,2564 ----
+      subcommands["list"] = cmd_user_list()
+      subcommands["setexpiry"] = cmd_user_setexpiry()
++     subcommands["modify"] = cmd_user_modify()
+      subcommands["password"] = cmd_user_password()
+      subcommands["setpassword"] = cmd_user_setpassword()

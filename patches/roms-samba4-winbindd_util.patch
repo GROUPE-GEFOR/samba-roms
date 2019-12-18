@@ -1,0 +1,25 @@
+*** a/source3/winbindd/winbindd_util.c.ori	2015-09-08 15:45:25.000000000 +0200
+--- b/source3/winbindd/winbindd_util.c	2016-02-23 14:26:35.345404512 +0100
+***************
+*** 1109,1117 ****
+  {
+  	fstring tmp_user;
+  
+! 	if (lp_server_role() == ROLE_ACTIVE_DIRECTORY_DC) {
+! 		can_assume = false;
+! 	}
+  
+  	fstrcpy(tmp_user, user);
+  	(void)strlower_m(tmp_user);
+--- 1109,1119 ----
+  {
+  	fstring tmp_user;
+  
+! 	/*
+! 	 * if (lp_server_role() == ROLE_ACTIVE_DIRECTORY_DC) {
+! 	 * 	can_assume = false;
+! 	 * }
+! 	 */
+  
+  	fstrcpy(tmp_user, user);
+  	(void)strlower_m(tmp_user);

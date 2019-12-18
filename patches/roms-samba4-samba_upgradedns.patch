@@ -1,0 +1,20 @@
+*** a/source4/scripting/bin/samba_upgradedns.ori	2019-01-15 11:07:00.000000000 +0100
+--- b/source4/scripting/bin/samba_upgradedns	2019-08-07 15:35:07.960039750 +0200
+***************
+*** 345,351 ****
+          msg = ldbs.sam.search(base=names.configdn, scope=ldb.SCOPE_DEFAULT,
+                                expression=expression, attrs=['nCName'])
+          ncname = msg[0]['nCName'][0]
+!     except IndexError:
+          logger.info("Creating DNS partitions")
+  
+          logger.info("Looking up IPv4 addresses")
+--- 345,352 ----
+          msg = ldbs.sam.search(base=names.configdn, scope=ldb.SCOPE_DEFAULT,
+                                expression=expression, attrs=['nCName'])
+          ncname = msg[0]['nCName'][0]
+!     #except IndexError:
+!     except Exception:
+          logger.info("Creating DNS partitions")
+  
+          logger.info("Looking up IPv4 addresses")
