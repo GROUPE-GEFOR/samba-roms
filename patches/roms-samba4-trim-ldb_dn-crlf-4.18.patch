@@ -1,0 +1,22 @@
+Index: samba-4.22.4-roms/lib/ldb/common/ldb_dn.c
+===================================================================
+--- samba-4.22.4-roms.orig/lib/ldb/common/ldb_dn.c
++++ samba-4.22.4-roms/lib/ldb/common/ldb_dn.c
+@@ -536,7 +536,7 @@ static bool ldb_dn_explode(struct ldb_dn
+ 			}
+ 
+ 			if (trim) {
+-				if (*p == ' ') {
++				if (*p == ' ' || *p == '\r' || *p == '\n') {
+ 					p++;
+ 					continue;
+ 				}
+@@ -687,7 +687,7 @@ static bool ldb_dn_explode(struct ldb_dn
+ 					break;
+ 				}
+ 
+-				if (*p == ' ') {
++				if (*p == ' ' || *p == '\r' || *p == '\n') {
+ 					if (t == NULL) {
+ 						t = p;
+ 					}
