@@ -116,7 +116,7 @@ ROMS_PATCHES=$(grep -v -E '^[[:space:]]*(#|$)' "$ROOT/patches/series.roms")
 while p=$(quilt next 2>/dev/null); do
   p=${p#debian/patches/}
   if quilt push -q > "$WORK/quilt.log" 2>&1; then
-    quilt refresh -q
+    quilt refresh > /dev/null
     continue
   fi
   # quilt push n'a rien laissé d'appliqué : on cherche pourquoi
