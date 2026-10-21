@@ -4,8 +4,11 @@
 # Un fichier modifié depuis l'import (md5 différent) garde sa date actuelle.
 set -euo pipefail
 
-TSV=${1:-$(ls patches/HORODATAGE.tsv archive/HORODATAGE.tsv 2>/dev/null | head -1)}
-[ -f "$TSV" ] || { echo "HORODATAGE.tsv introuvable" >&2; exit 1; }
+TSV=${1:-}
+if [ -z "$TSV" ]; then
+  for f in patches/HORODATAGE.tsv archive/HORODATAGE.tsv; do [ -f "$f" ] && { TSV=$f; break; }; done
+fi
+[ -n "$TSV" ] && [ -f "$TSV" ] || { echo "HORODATAGE.tsv introuvable" >&2; exit 1; }
 
 ok=0; ignores=0
 while IFS=$'\t' read -r date md5 chemin _; do
