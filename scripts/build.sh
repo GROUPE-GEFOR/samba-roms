@@ -154,6 +154,13 @@ while p=$(quilt next 2>/dev/null); do
 done
 quilt applied | sed 's/^/  appliqué : /'
 
+# Fichiers à ne pas empaqueter pour cette branche et cette distribution (patches/debian-not-installed.conf)
+while read -r b d f raison; do
+  [ "$BRANCH" = "$b" ] && [ "$DIST" = "$d" ] || continue
+  echo "$f" >> debian/not-installed
+  echo "::notice::$f non empaqueté ($BRANCH, $DIST) : $raison"
+done < <(grep -v -E '^[[:space:]]*(#|$)' "$ROOT/patches/debian-not-installed.conf")
+
 # Suffixe de version « roms » (VERSION.orig garde l'original)
 if [ ! -f VERSION.orig ]; then
   mv VERSION VERSION.orig

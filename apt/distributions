@@ -6,7 +6,6 @@ Architectures: amd64
 Components: samba-4.22 samba-4.23 samba-4.24 samba-4.25
 Description: Samba roms pour Debian 12 (bookworm), un composant par branche de Samba
 SignWith: @KEYID@
-Limit: 5
 
 Origin: samba-roms
 Label: samba-roms
@@ -16,4 +15,3 @@ Architectures: amd64
 Components: samba-4.22 samba-4.23 samba-4.24 samba-4.25
 Description: Samba roms pour Debian 13 (trixie), un composant par branche de Samba
 SignWith: @KEYID@
-Limit: 5

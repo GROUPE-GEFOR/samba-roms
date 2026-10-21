@@ -44,7 +44,7 @@ Paquets produits : `2:<version>-roms-<révision>+deb12` (bookworm) et `+deb13` (
    - `smbclient -L`, `wbinfo -u` et `samba-tool dbcheck`.
 3. **Publication** ([`scripts/publish-apt.sh`](scripts/publish-apt.sh)) :
    - Release GitHub `v<version>-roms-<révision>` avec tous les paquets, y compris les `-dbgsym`, ainsi que les `.changes` et `.buildinfo` ;
-   - dépôt APT signé (reprepro) sur la branche `gh-pages`, sans les `-dbgsym`, dans le composant de la branche (`samba-4.22`…). Le dépôt garde les 5 dernières versions par distribution et par branche.
+   - dépôt APT signé (reprepro) sur la branche `gh-pages`, sans les `-dbgsym`, dans le composant de la branche (`samba-4.22`…). Le dépôt APT ne garde que la dernière version de chaque branche ; les versions précédentes restent téléchargeables dans les Releases (retour arrière : `apt install ./paquet.deb …`).
 
 Les patches tels qu'ils ont été appliqués (rafraîchis par quilt) se trouvent dans l'artefact `debs-<distribution>`, dossier `patches/`.
 
