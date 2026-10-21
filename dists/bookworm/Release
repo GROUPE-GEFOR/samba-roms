@@ -1,0 +1,47 @@
+Origin: samba-roms
+Label: samba-roms
+Suite: bookworm
+Codename: bookworm
+Date: Wed, 21 Oct 2026 16:00:12 UTC
+Architectures: amd64
+Components: samba-4.22 samba-4.23 samba-4.24 samba-4.25
+Description: Samba roms pour Debian 12 (bookworm), un composant par branche de Samba
+MD5Sum:
+ 553d2eef7c05f409cb1c2287c6624cba 44401 samba-4.22/binary-amd64/Packages
+ 2cf60469e2bbca883684a44756a4fb35 9504 samba-4.22/binary-amd64/Packages.gz
+ 342f18ce86125ee83ff726e147d86cad 182 samba-4.22/binary-amd64/Release
+ ff574c911ddab8ae8fd04038b7202e4f 43745 samba-4.23/binary-amd64/Packages
+ 20a0457cb09f7a9fb9efbfeaef1c7b2b 9372 samba-4.23/binary-amd64/Packages.gz
+ d6c548cabe00a29cb850bf1a59b8822d 182 samba-4.23/binary-amd64/Release
+ acc26745fca6c2c0e0d4af12d7500928 43625 samba-4.24/binary-amd64/Packages
+ 9084d5c002d810124ed623853d33d421 9382 samba-4.24/binary-amd64/Packages.gz
+ 3aa59451f1a80deeb7dc9603e7911ef0 182 samba-4.24/binary-amd64/Release
+ d41d8cd98f00b204e9800998ecf8427e 0 samba-4.25/binary-amd64/Packages
+ 7029066c27ac6f5ef18d660d5741979a 20 samba-4.25/binary-amd64/Packages.gz
+ 441175fe135339a5ac2d5aa31ded8086 182 samba-4.25/binary-amd64/Release
+SHA1:
+ bae1e68c99cdb1c51d553d2caaf8b53af8790871 44401 samba-4.22/binary-amd64/Packages
+ a842e08cf7c7183485fabdb5c6dfb7fc1cab7bd0 9504 samba-4.22/binary-amd64/Packages.gz
+ fa17c4004c80594d0f3a835091d84af869fb14b0 182 samba-4.22/binary-amd64/Release
+ 3eac855f6892eb485cb5c9f114915343e1e6c087 43745 samba-4.23/binary-amd64/Packages
+ 398416d34ba4b38bae282a1b91c68fb781e3536e 9372 samba-4.23/binary-amd64/Packages.gz
+ d438f827ff6d63c55019aeb180bee9985571768c 182 samba-4.23/binary-amd64/Release
+ 4c636ae4eac72662edc41419ca7290ebf718cf1b 43625 samba-4.24/binary-amd64/Packages
+ 89d414eb05e23a5afc9cfc241877848d67f773e7 9382 samba-4.24/binary-amd64/Packages.gz
+ a4a28a2043baaa80624b307fbbe2aee4b2281a9b 182 samba-4.24/binary-amd64/Release
+ da39a3ee5e6b4b0d3255bfef95601890afd80709 0 samba-4.25/binary-amd64/Packages
+ 46c6643f07aa7f6bfe7118de926b86defc5087c4 20 samba-4.25/binary-amd64/Packages.gz
+ 526ea916df5a3d062e332a9e3255aa9312be30c5 182 samba-4.25/binary-amd64/Release
+SHA256:
+ 099e2ed8c9c59d18bc175cff390ca33d725c3e5c57c8795d9afee374dc9204e3 44401 samba-4.22/binary-amd64/Packages
+ 62201b938aaded8c35ea9af2e3a12f12da5c2a79f3f365c37e30fba6ee713f4c 9504 samba-4.22/binary-amd64/Packages.gz
+ 11b3673ca60a4487a1e040e8415036bdb7cc8288b7f831abedc264a490a888ff 182 samba-4.22/binary-amd64/Release
+ 79c211ae85f227ab15424b1257a48e78be2c70f827ce94b1b59f65a89886d770 43745 samba-4.23/binary-amd64/Packages
+ 47644296a395d529b69b3f9e79514f3af1a9d88389962e58068f520edb4e8a88 9372 samba-4.23/binary-amd64/Packages.gz
+ 385998822165e53a824491cc9b12339eea396b8ad95393bce7ba6bfee1b8e458 182 samba-4.23/binary-amd64/Release
+ 759f61b1549b693bd0aa7706f09e813ebcd638178c54499941ad358fea4f88fb 43625 samba-4.24/binary-amd64/Packages
+ cda99402ab0c7c8a88d50104eb36f95efe48243b53e44e61fcc4ab528a6dee57 9382 samba-4.24/binary-amd64/Packages.gz
+ fcdb6eb20130ff3db7a6fb66c3a553259006c7f0f5bcf630fde1c3e49a5381b0 182 samba-4.24/binary-amd64/Release
+ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 samba-4.25/binary-amd64/Packages
+ 59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 samba-4.25/binary-amd64/Packages.gz
+ e3a29ae6495461a4657c6b8fc856bd0c6836bf3f595a9a5e25d242a42e5c91c7 182 samba-4.25/binary-amd64/Release

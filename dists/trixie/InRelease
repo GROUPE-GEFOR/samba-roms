@@ -1,0 +1,66 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: samba-roms
+Label: samba-roms
+Suite: trixie
+Codename: trixie
+Date: Wed, 21 Oct 2026 16:00:12 UTC
+Architectures: amd64
+Components: samba-4.22 samba-4.23 samba-4.24 samba-4.25
+Description: Samba roms pour Debian 13 (trixie), un composant par branche de Samba
+MD5Sum:
+ aaad3f55d90c4f6d8e35567cbaa2df6d 44761 samba-4.22/binary-amd64/Packages
+ 6548741fd7642e245154089ab46cf710 9540 samba-4.22/binary-amd64/Packages.gz
+ dfe33156b662a06e2c141361fbfac193 178 samba-4.22/binary-amd64/Release
+ a838903777294a4024db24441ebcf256 44106 samba-4.23/binary-amd64/Packages
+ 5143c3930044618e8a08c2fd57e94c98 9429 samba-4.23/binary-amd64/Packages.gz
+ 68d9e1265ad5e4bb4b96af5a301872e0 178 samba-4.23/binary-amd64/Release
+ a72d11c5105226b565c2d02802fcbe50 43981 samba-4.24/binary-amd64/Packages
+ 8c5f2f16eaa90eae1d416f56c0ad8700 9429 samba-4.24/binary-amd64/Packages.gz
+ 02e946178527b4a83c8cb5a41caba0da 178 samba-4.24/binary-amd64/Release
+ d41d8cd98f00b204e9800998ecf8427e 0 samba-4.25/binary-amd64/Packages
+ 7029066c27ac6f5ef18d660d5741979a 20 samba-4.25/binary-amd64/Packages.gz
+ 0a189bf97734eda0c583290f2e85f5fb 178 samba-4.25/binary-amd64/Release
+SHA1:
+ 3290167affa28da6f8e9d4d1f97342f18fede400 44761 samba-4.22/binary-amd64/Packages
+ 01583c060549f9e80435db31fd85628ecfce85ff 9540 samba-4.22/binary-amd64/Packages.gz
+ fa6b7589ccb1f9bb910da3e72d450614c597e4ed 178 samba-4.22/binary-amd64/Release
+ 8fecc66f6dca98111689a271433605d088776640 44106 samba-4.23/binary-amd64/Packages
+ f2aaed9cba8beed49a181d4a6aaae918cdb1ea3b 9429 samba-4.23/binary-amd64/Packages.gz
+ fbde99570f174a7c706ac6fadc57b7e53a1a25c5 178 samba-4.23/binary-amd64/Release
+ 154a8a9cf4d83e05f642c9dd6174de6f3afa4e2b 43981 samba-4.24/binary-amd64/Packages
+ 747e8c505652f196a599264309e6cb70b7114c2a 9429 samba-4.24/binary-amd64/Packages.gz
+ faaee37ac71c91b6ee87200d71762d1b579d397d 178 samba-4.24/binary-amd64/Release
+ da39a3ee5e6b4b0d3255bfef95601890afd80709 0 samba-4.25/binary-amd64/Packages
+ 46c6643f07aa7f6bfe7118de926b86defc5087c4 20 samba-4.25/binary-amd64/Packages.gz
+ c67b5a729c9527aa7268db05649bb497fc41e1eb 178 samba-4.25/binary-amd64/Release
+SHA256:
+ 2f4ef04db9fd410b2a82a1888dadb2d630c65d5c49e48906a88fcf6228ecf6eb 44761 samba-4.22/binary-amd64/Packages
+ 76fba18be53a1787ca11efda3783e7f3dd2e5dd88c4efbf0a7cf41b35b41453a 9540 samba-4.22/binary-amd64/Packages.gz
+ 9689cc7347dc22539e15040fbd49550124fb014befe9e617623e0a81dea1a2e1 178 samba-4.22/binary-amd64/Release
+ cf272922b4ccee17c8046049916ca524f981369c81787d7de7993b11f8b374bc 44106 samba-4.23/binary-amd64/Packages
+ c9956116ccb9d51f438da09b9a51f6c2ee2e5e80e46f84bc102a3b96973bf906 9429 samba-4.23/binary-amd64/Packages.gz
+ f7da4e7ce831a86ae3ecc45e3a3f3461af59f5090e1cbe9a5dc12c762561f02b 178 samba-4.23/binary-amd64/Release
+ ee22b8071c7a23e06a2fa3b4ec005879a604f9247b9d842425a35e5189f0ba98 43981 samba-4.24/binary-amd64/Packages
+ 294343b36db9680c0d53f089a85b1df1eae05cbb95c0d5b4e9e0ac511a248d9c 9429 samba-4.24/binary-amd64/Packages.gz
+ 1229da65e53cec5ba3cf051ff047d896e8405504a489a5b6e2a7efa697db8408 178 samba-4.24/binary-amd64/Release
+ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 samba-4.25/binary-amd64/Packages
+ 59869db34853933b239f1e2219cf7d431da006aa919635478511fabbfc8849d2 20 samba-4.25/binary-amd64/Packages.gz
+ 29e215e9d10a0e4ab51cc552faff3a09aed860c7855995f6df098451e482bebd 178 samba-4.25/binary-amd64/Release
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEUuDjJfFBci1reA5rWCz5eTV1lSgFAmrY4YwACgkQWCz5eTV1
+lSjqRA//V0rgfgJ8BmiflAPEHnSSY92isp8bKCSUrJhgKmJUfPM8mHjszrM10KTk
+4mru+gIn+L9zALyC+WJImxnr2YYnZQCEuyBOnxAYZGkdIL9nDCZbu/TPv9PxW67w
+lktzBHkiVXK7Ji43lbUKI/v5ThrTsPTBlzWwXw0aiQk/mx12IA14N1wwYb3nr0/j
+pR6uuC6OX22qIi+JzWiZ7sUK3/skfBln4/kvE4G1BZw8/QZ4Owudjm/z8/IEQ2ZB
+QDtJkh+6cp2eauRetueX+W2oUFJAdSHdTKdpIF0aezHF9d/wlfc0hf9ZUbQTg6lB
+GAptwv+8t+DLusOla7VBLWKPaa2UQCxpFW4QL2scvAd9Sd7FpgUSdcpva1Bhvdvg
+AOF1x9IRq46N+uADjU6q1i3ncWEnui4/6Hj09t8etnCyEfbJfKS32KFMLxzP75/W
+Y+bsC1UDBXy3FAHiYpEaDP4tbt+OIzc03vja3/anq3bU9l5U9IWvvfdbw9mIbDXz
+q55gGXdv1Lrt6TUXtJPmg73SzmDWldY48PP3zx4EPUwAOE+A2CJuEl2hQL12Pl6R
+q1TPsHai0xF9MEZFSXSsl1zdATNRv8o5U6MQ5P4C+zNW4fSE24dXxlhrnZNAzg2q
+cjUs7ShF/7XpV4BQ17eFddG5R546oj51RwUgUuqCmuhO0w4LJbE=
+=Fk3p
+-----END PGP SIGNATURE-----

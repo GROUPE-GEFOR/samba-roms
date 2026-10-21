@@ -1,0 +1,17 @@
+Origin: samba-roms
+Label: samba-roms
+Codename: bookworm
+Suite: bookworm
+Architectures: amd64
+Components: samba-4.22 samba-4.23 samba-4.24 samba-4.25
+Description: Samba roms pour Debian 12 (bookworm), un composant par branche de Samba
+SignWith: 52E0E325F141722D6B780E6B582CF97935759528
+
+Origin: samba-roms
+Label: samba-roms
+Codename: trixie
+Suite: trixie
+Architectures: amd64
+Components: samba-4.22 samba-4.23 samba-4.24 samba-4.25
+Description: Samba roms pour Debian 13 (trixie), un composant par branche de Samba
+SignWith: 52E0E325F141722D6B780E6B582CF97935759528

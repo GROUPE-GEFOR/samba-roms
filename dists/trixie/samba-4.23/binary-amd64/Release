@@ -1,0 +1,6 @@
+Archive: trixie
+Component: samba-4.23
+Origin: samba-roms
+Label: samba-roms
+Architecture: amd64
+Description: Samba roms pour Debian 13 (trixie), un composant par branche de Samba
