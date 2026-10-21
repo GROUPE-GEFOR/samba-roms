@@ -85,9 +85,21 @@ fetch_debian "$DEBTAR"
 echo "$DEBTAR_SHA  $DEBTAR" | sha256sum -c -
 
 log "Téléchargement de samba-$VERSION.tar.gz et vérification de sa signature"
-UP=https://download.samba.org/pub/samba/stable
-curl -fsSL --retry 3 -O "$UP/samba-$VERSION.tar.gz"
-curl -fsSL --retry 3 -O "$UP/samba-$VERSION.tar.asc"
+# Site officiel, puis miroir (la signature est vérifiée juste après, quelle que soit la source)
+SAMBA_MIRRORS="https://download.samba.org/pub/samba/stable https://ftp.funet.fi/pub/mirrors/samba.org/pub/samba/stable"
+fetch_samba() {   # $1 = nom de fichier
+  local base
+  for base in $SAMBA_MIRRORS; do
+    if curl -fsSL --retry 4 --retry-all-errors --retry-delay 15 --connect-timeout 30 -o "$1" "$base/$1"; then
+      echo "$1 téléchargé depuis $base"
+      return 0
+    fi
+    echo "::warning::$1 indisponible sur $base"
+  done
+  die "$1 introuvable sur les sites de Samba"
+}
+fetch_samba "samba-$VERSION.tar.gz"
+fetch_samba "samba-$VERSION.tar.asc"
 
 SRC="samba-${VERSION}-roms"
 mkdir "$SRC"
