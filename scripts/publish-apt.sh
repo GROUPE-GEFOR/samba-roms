@@ -23,11 +23,16 @@ REPREPRO=(reprepro --basedir "$SITE/.reprepro" --outdir "$SITE")
 mkdir -p "$SITE/.reprepro/conf"
 sed "s/@KEYID@/$KEYID/" "$ROOT/apt/distributions" > "$SITE/.reprepro/conf/distributions"
 
+# Un composant par branche (samba-4.22, samba-4.24…) : un serveur ne suit que sa branche
 for dir in "$DL"/debs-*; do
   dist=${dir##*/debs-}
+  samba_version=$(. "$dir/build-info.txt"; echo "$samba_version")
+  comp="samba-${samba_version%.*}"
+  grep -q -E "^Components:.* $comp( |\$)" "$ROOT/apt/distributions" \
+    || { echo "::error::composant $comp absent de apt/distributions" >&2; exit 1; }
   mapfile -t debs < <(ls "$dir"/*.deb | grep -v -- '-dbgsym_')
-  echo "--- $dist : ${#debs[@]} paquets"
-  "${REPREPRO[@]}" includedeb "$dist" "${debs[@]}"
+  echo "--- $dist / $comp : ${#debs[@]} paquets"
+  "${REPREPRO[@]}" -C "$comp" includedeb "$dist" "${debs[@]}"
 done
 "${REPREPRO[@]}" export
 

@@ -44,13 +44,16 @@ Paquets produits : `2:<version>-roms-<révision>+deb12` (bookworm) et `+deb13` (
    - `smbclient -L`, `wbinfo -u` et `samba-tool dbcheck`.
 3. **Publication** ([`scripts/publish-apt.sh`](scripts/publish-apt.sh)) :
    - Release GitHub `v<version>-roms-<révision>` avec tous les paquets, y compris les `-dbgsym`, ainsi que les `.changes` et `.buildinfo` ;
-   - dépôt APT signé (reprepro) sur la branche `gh-pages`, sans les `-dbgsym`. Le dépôt garde les 5 dernières versions par distribution.
+   - dépôt APT signé (reprepro) sur la branche `gh-pages`, sans les `-dbgsym`, dans le composant de la branche (`samba-4.22`…). Le dépôt garde les 5 dernières versions par distribution et par branche.
 
 Les patches tels qu'ils ont été appliqués (rafraîchis par quilt) se trouvent dans l'artefact `debs-<distribution>`, dossier `patches/`.
 
 ## Installer sur un serveur
 
+Chaque branche de Samba a son propre composant : `samba-4.22`, `samba-4.23`, `samba-4.24` (et `samba-4.25` plus tard). Un serveur ne suit que la branche choisie, et `apt upgrade` ne le fait jamais passer à une autre. Pour changer de branche, il faut modifier `Components:` volontairement.
+
 ```bash
+BRANCHE=samba-4.22     # branche à suivre
 install -d /etc/apt/keyrings
 curl -fsSL https://groupe-gefor.github.io/samba-roms/samba-roms.gpg -o /etc/apt/keyrings/samba-roms.gpg
 
@@ -58,7 +61,7 @@ cat > /etc/apt/sources.list.d/samba-roms.sources <<EOF
 Types: deb
 URIs: https://groupe-gefor.github.io/samba-roms
 Suites: $(. /etc/os-release; echo $VERSION_CODENAME)
-Components: main
+Components: $BRANCHE
 Signed-By: /etc/apt/keyrings/samba-roms.gpg
 EOF
 

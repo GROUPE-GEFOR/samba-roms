@@ -19,14 +19,16 @@
 <a href="https://github.com/GROUPE-GEFOR/samba-roms">GROUPE-GEFOR/samba-roms</a>.</p>
 
 <h2>Installation</h2>
-<pre><code>install -d /etc/apt/keyrings
+<p>Un composant par branche de Samba (<code>samba-4.22</code>, <code>samba-4.23</code>, <code>samba-4.24</code>) : un serveur ne suit que la branche choisie.</p>
+<pre><code>BRANCHE=samba-4.22     # branche à suivre
+install -d /etc/apt/keyrings
 curl -fsSL https://groupe-gefor.github.io/samba-roms/samba-roms.gpg -o /etc/apt/keyrings/samba-roms.gpg
 
 cat &gt; /etc/apt/sources.list.d/samba-roms.sources &lt;&lt;EOF
 Types: deb
 URIs: https://groupe-gefor.github.io/samba-roms
 Suites: $(. /etc/os-release; echo $VERSION_CODENAME)
-Components: main
+Components: $BRANCHE
 Signed-By: /etc/apt/keyrings/samba-roms.gpg
 EOF
 
