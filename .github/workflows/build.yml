@@ -109,7 +109,7 @@ jobs:
       GH_REPO: ${{ github.repository }}
     steps:
       - name: Outils
-        run: apt-get update -q && apt-get install -y -q --no-install-recommends git ca-certificates gpg reprepro gh
+        run: apt-get update -q && apt-get install -y -q --no-install-recommends git ca-certificates gpg gpg-agent reprepro gh
       - uses: actions/checkout@v7
       - uses: actions/checkout@v7
         with:

@@ -177,6 +177,10 @@ apt-get build-dep -y -q "${APT_OPTS[@]}" ./
 log "Compilation ($(nproc) processeurs)"
 export DEB_BUILD_PROFILES="${PROFILES//,/ }"
 export DEB_BUILD_OPTIONS="nocheck parallel=$(nproc)"
+# Le donneur peut être plus ancien que la version compilée (ex. packaging 4.23.6 pour Samba 4.23.13) :
+# on accepte les nouveaux symboles de bibliothèque, mais une disparition de symbole (rupture d'ABI)
+# reste une erreur (niveau 1 de dpkg-gensymbols, au lieu du niveau 4 demandé par debian/rules).
+export DPKG_GENSYMBOLS_CHECK_LEVEL=1
 start=$(date +%s)
 dpkg-buildpackage -b -us -uc -nc
 echo "Compilation terminée en $(( ($(date +%s) - start) / 60 )) min"
