@@ -95,6 +95,8 @@ Les patches ont aussi été importés par des commits datés de leur modificatio
 
 ## Clé de signature du dépôt APT
 
+Empreinte : `52E0 E325 F141 722D 6B78  0E6B 582C F979 3575 9528` (RSA 4096, « samba-roms APT (GROUPE-GEFOR) »).
+
 La clé privée se trouve uniquement dans le secret `APT_GPG_PRIVATE_KEY` du dépôt GitHub. La clé publique est publiée sur `https://groupe-gefor.github.io/samba-roms/samba-roms.gpg`. Pour changer de clé :
 1. générer une nouvelle clé sans phrase de passe ;
 2. remplacer le secret (`gh secret set APT_GPG_PRIVATE_KEY -R GROUPE-GEFOR/samba-roms < cle.asc`) ;
