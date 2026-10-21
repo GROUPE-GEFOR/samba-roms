@@ -4,6 +4,8 @@ roms-samba4-winbindd_util.patch
 roms-samba4-ldap_bind.patch
 roms-samba4-samba_upgradedns.patch
 roms-samba4-trim-ldb_dn-crlf-4.18.patch
-roms-samba4-Fix-Security-Tab-bugs-14213.patch
+# Bug 14213 corrigé dans Samba avant la 4.22 (le code upstream 4.22.4 est celui que produit le patch) ;
+# appliqué jusqu'en 4.19.x, ne s'applique plus depuis 4.22.
+#roms-samba4-Fix-Security-Tab-bugs-14213.patch
 # Remplacé par « samba-tool user edit » ; appliqué jusqu'en 4.19.x, désactivé depuis 4.22.
 #roms-samba4-cmd_user_modify.patch

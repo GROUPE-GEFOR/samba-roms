@@ -80,7 +80,7 @@ apt update && apt list --upgradable
 | `roms-samba4-winbindd_util.patch` | winbind : ne force pas `can_assume = false` sur un contrôleur AD | appliqué |
 | `roms-samba4-samba_upgradedns.patch` | `samba_upgradedns` : capture toutes les exceptions lors de la recherche des partitions DNS | appliqué |
 | `roms-samba4-trim-ldb_dn-crlf-4.18.patch` | ldb : ignore les CR/LF autour des composants d'un DN | appliqué |
-| `roms-samba4-Fix-Security-Tab-bugs-14213.patch` | Résolution des SID prédéfinis comme Windows (onglet Sécurité, [bug 14213](https://bugzilla.samba.org/show_bug.cgi?id=14213)) | appliqué |
+| `roms-samba4-Fix-Security-Tab-bugs-14213.patch` | Résolution des SID prédéfinis comme Windows (onglet Sécurité, [bug 14213](https://bugzilla.samba.org/show_bug.cgi?id=14213)) | désactivé : intégré dans Samba avant la 4.22 |
 | `roms-samba4-cmd_user_modify.patch` | `samba-tool user modify` | désactivé depuis 4.22 (`samba-tool user edit`) |
 
 ## Dates d'origine des patches
