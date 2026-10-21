@@ -1,0 +1,19 @@
+Origin: samba-roms
+Label: samba-roms
+Codename: bookworm
+Suite: bookworm
+Architectures: amd64
+Components: main
+Description: Samba roms pour Debian 12 (bookworm)
+SignWith: @KEYID@
+Limit: 5
+
+Origin: samba-roms
+Label: samba-roms
+Codename: trixie
+Suite: trixie
+Architectures: amd64
+Components: main
+Description: Samba roms pour Debian 13 (trixie)
+SignWith: @KEYID@
+Limit: 5

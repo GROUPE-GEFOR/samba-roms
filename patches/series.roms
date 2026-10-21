@@ -1,0 +1,9 @@
+# Patches roms ajoutés à la fin de debian/patches/series, dans cet ordre.
+# Une ligne commentée (#) = patch conservé dans patches/ mais non appliqué.
+roms-samba4-winbindd_util.patch
+roms-samba4-ldap_bind.patch
+roms-samba4-samba_upgradedns.patch
+roms-samba4-trim-ldb_dn-crlf-4.18.patch
+roms-samba4-Fix-Security-Tab-bugs-14213.patch
+# Remplacé par « samba-tool user edit » ; appliqué jusqu'en 4.19.x, désactivé depuis 4.22.
+#roms-samba4-cmd_user_modify.patch

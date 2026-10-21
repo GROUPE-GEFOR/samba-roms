@@ -1,0 +1,142 @@
+name: Compilation Samba roms
+
+on:
+  workflow_dispatch:
+    inputs:
+      samba_version:
+        description: "Version de Samba (upstream), ex. 4.24.8"
+        required: true
+      roms_rev:
+        description: "Révision roms (1, 2, …) : à augmenter pour recompiler une même version"
+        required: true
+        default: "1"
+      targets:
+        description: "Distributions, séparées par des virgules"
+        required: true
+        default: "bookworm,trixie"
+      donor:
+        description: "Version Debian du packaging donneur, à la place de targets.conf (optionnel, ex. 2:4.22.3+dfsg-4~bpo12+1)"
+        required: false
+        default: ""
+      publish:
+        description: "Publier : Release GitHub + dépôt APT"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.check.outputs.matrix }}
+      tag: ${{ steps.check.outputs.tag }}
+    steps:
+      - id: check
+        env:
+          VERSION: ${{ inputs.samba_version }}
+          REV: ${{ inputs.roms_rev }}
+          TARGETS: ${{ inputs.targets }}
+          DONOR: ${{ inputs.donor }}
+        run: |
+          [[ $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "::error::version Samba invalide : $VERSION"; exit 1; }
+          [[ $REV =~ ^[0-9]+$ ]] || { echo "::error::révision roms invalide : $REV"; exit 1; }
+          [[ -z $DONOR || $DONOR =~ ^[0-9]+:[0-9A-Za-z.+~-]+$ ]] || { echo "::error::version du donneur invalide : $DONOR"; exit 1; }
+          list=()
+          for t in ${TARGETS//,/ }; do
+            case $t in bookworm|trixie) list+=("\"$t\"") ;; *) echo "::error::distribution inconnue : $t"; exit 1 ;; esac
+          done
+          echo "matrix=[$(IFS=,; echo "${list[*]}")]" >> "$GITHUB_OUTPUT"
+          echo "tag=v${VERSION}-roms-${REV}" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        distribution: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    container: debian:${{ matrix.distribution }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Compilation
+        env:
+          VERSION: ${{ inputs.samba_version }}
+          REV: ${{ inputs.roms_rev }}
+          DIST: ${{ matrix.distribution }}
+          DONOR: ${{ inputs.donor }}
+        run: bash scripts/build.sh "$VERSION" "$REV" "$DIST" "$DONOR"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: debs-${{ matrix.distribution }}
+          path: out/${{ matrix.distribution }}/
+          retention-days: 30
+
+  test:
+    needs: [prepare, build]
+    strategy:
+      fail-fast: false
+      matrix:
+        distribution: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          name: debs-${{ matrix.distribution }}
+          path: out/${{ matrix.distribution }}
+      - name: Installation et domaine AD de test
+        env:
+          DIST: ${{ matrix.distribution }}
+        run: |
+          docker run --rm --privileged --hostname dc1 -v "$PWD:/src" -w /src "debian:$DIST" \
+            bash scripts/smoke-test.sh "$DIST"
+
+  publish:
+    if: inputs.publish
+    needs: [prepare, test]
+    runs-on: ubuntu-latest
+    container: debian:trixie
+    concurrency: publication
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ needs.prepare.outputs.tag }}
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Outils
+        run: apt-get update -q && apt-get install -y -q --no-install-recommends git ca-certificates gpg reprepro gh
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          ref: gh-pages
+          path: site
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: debs-*
+          path: dl
+      - name: Release GitHub
+        run: |
+          {
+            echo "Paquets Samba roms compilés par l'action [${GITHUB_RUN_ID}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})."
+            for f in dl/debs-*/build-info.txt; do echo; echo '```'; cat "$f"; echo '```'; done
+          } > notes.md
+          gh release view "$TAG" > /dev/null 2>&1 || gh release create "$TAG" --title "Samba ${TAG#v}" --notes-file notes.md
+          gh release upload "$TAG" --clobber dl/debs-*/*.deb dl/debs-*/*.changes dl/debs-*/*.buildinfo
+      - name: Dépôt APT (gh-pages)
+        env:
+          APT_GPG_PRIVATE_KEY: ${{ secrets.APT_GPG_PRIVATE_KEY }}
+        run: |
+          bash scripts/publish-apt.sh site dl
+          cd site
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Un seul commit sur gh-pages : l'historique des paquets est dans les Releases
+          git checkout -q --orphan publication
+          git add -A
+          git commit -q -m "Dépôt APT : $TAG"
+          git push -q -f origin publication:gh-pages

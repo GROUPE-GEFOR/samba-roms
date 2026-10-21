@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dépôt APT samba-roms</title>
+<style>
+  :root { --bg: #fdfdfc; --fg: #1d1d1b; --muted: #5f5f5a; --code: #f1f0ec; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1b1b1a; --fg: #ecebe6; --muted: #a5a49d; --code: #2a2a28; } }
+  body { background: var(--bg); color: var(--fg); font: 16px/1.55 system-ui, sans-serif; max-width: 52rem; margin: 2rem auto; padding: 0 16px; }
+  pre { background: var(--code); padding: .8rem 1rem; overflow-x: auto; border-radius: 6px; }
+  code { font-family: ui-monospace, Consolas, monospace; font-size: .92em; }
+  p.muted { color: var(--muted); }
+</style>
+</head>
+<body>
+<h1>Dépôt APT samba-roms</h1>
+<p>Paquets Samba « roms » (packaging Debian + patches roms) pour Debian 12 (bookworm) et Debian 13 (trixie), compilés par
+<a href="https://github.com/GROUPE-GEFOR/samba-roms">GROUPE-GEFOR/samba-roms</a>.</p>
+
+<h2>Installation</h2>
+<pre><code>install -d /etc/apt/keyrings
+curl -fsSL https://groupe-gefor.github.io/samba-roms/samba-roms.gpg -o /etc/apt/keyrings/samba-roms.gpg
+
+cat &gt; /etc/apt/sources.list.d/samba-roms.sources &lt;&lt;EOF
+Types: deb
+URIs: https://groupe-gefor.github.io/samba-roms
+Suites: $(. /etc/os-release; echo $VERSION_CODENAME)
+Components: main
+Signed-By: /etc/apt/keyrings/samba-roms.gpg
+EOF
+
+cat &gt; /etc/apt/preferences.d/samba-roms &lt;&lt;EOF
+Package: *
+Pin: release o=samba-roms
+Pin-Priority: 1001
+EOF
+
+apt update</code></pre>
+
+<p><a href="paquets.txt">Liste des paquets publiés</a> · <a href="samba-roms.asc">clé publique (ASCII)</a></p>
+<p class="muted">Les paquets de débogage (-dbgsym) sont dans les Releases GitHub du dépôt.</p>
+</body>
+</html>

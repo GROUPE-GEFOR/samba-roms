@@ -1,0 +1,9 @@
+# Date de modification d origine de chaque patch (heure de Paris), md5, chemin dans le dépôt, provenance.
+# Restauration des dates après un git clone : scripts/restaurer-dates.sh
+date	md5	chemin	provenance
+2019-12-18T21:53:51+0100	c5e869cc6abe13ccd61832b1420cd009	patches/roms-samba4-cmd_user_modify.patch	patch roms d origine
+2023-07-25T21:33:27+0200	d4250e5b006c0414423224be3c9b6e1e	patches/roms-samba4-Fix-Security-Tab-bugs-14213.patch	patch roms d origine
+2019-12-18T22:40:30+0100	a7ae8de0cb90f0ce9fafe3a5a2db440f	patches/roms-samba4-ldap_bind.patch	patch roms d origine
+2019-12-18T22:41:09+0100	201ea4c13c3ad1289594a5bc53b5ff15	patches/roms-samba4-samba_upgradedns.patch	patch roms d origine
+2025-09-11T00:44:52+0200	fc827dc4c7e3b46bcae05c7bc1ec19e2	patches/roms-samba4-trim-ldb_dn-crlf-4.18.patch	patch roms d origine
+2019-12-18T21:56:00+0100	50566516fa175fc55b2ad2efd78139c9	patches/roms-samba4-winbindd_util.patch	patch roms d origine
