@@ -33,7 +33,7 @@ Paquets produits : `2:<version>-roms-<révision>+deb12` (bookworm) et `+deb13` (
    - elle télécharge le paquet source Debian donneur indiqué dans [`targets.conf`](targets.conf), depuis deb.debian.org ou, s'il a quitté l'archive, depuis snapshot.debian.org ;
    - elle télécharge le tarball officiel de Samba et vérifie sa signature : clé « Samba Distribution Verification Key », empreinte `81F5E2832BD2545A1897B713AA99442FB680B620` ;
    - elle reprend le répertoire `debian/` du donneur et y ajoute les patches de [`patches/`](patches/) dans l'ordre de [`patches/series.roms`](patches/series.roms) ;
-   - si un **patch Debian** est déjà intégré dans la version upstream, elle le retire et le signale ;
+   - si un **patch Debian** est déjà intégré dans la version upstream, elle le retire et le signale. Quand la correction upstream a une autre forme, le patch ne s'applique plus : il faut alors le déclarer dans [`patches/debian-retires.conf`](patches/debian-retires.conf), comme `libads-fix-get_kdc_ip_string.patch` pour la 4.22.4 ;
    - si un **patch roms** ne s'applique plus, la compilation s'arrête : il faut mettre ce patch à jour dans `patches/` ;
    - elle met le suffixe `roms` dans `VERSION`, puis lance `dpkg-buildpackage -b` avec les profils de `targets.conf` (tests Samba désactivés : `nocheck`).
 2. **Test** ([`scripts/smoke-test.sh`](scripts/smoke-test.sh)), dans un conteneur neuf de la même distribution :

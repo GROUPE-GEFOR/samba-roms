@@ -112,6 +112,14 @@ export QUILT_REFRESH_ARGS="-p ab --no-timestamps --no-index"
 cp "$ROOT"/patches/roms-*.patch debian/patches/   # y compris les patches désactivés, pour mémoire
 { echo; echo "# --- patches roms (dépôt samba-roms)"; grep -v -E '^[[:space:]]*$' "$ROOT/patches/series.roms"; } >> debian/patches/series
 
+# Patches Debian déjà intégrés autrement dans cette version (patches/debian-retires.conf)
+while read -r v p raison; do
+  [ "$VERSION" = "$v" ] || [ "${VERSION#"$v".}" != "$VERSION" ] || continue
+  grep -qxF "$p" debian/patches/series || continue
+  echo "::notice::patch Debian $p retiré pour Samba $VERSION : $raison"
+  sed -i "s|^${p}\$|#${p}  # retiré : $raison|" debian/patches/series
+done < <(grep -v -E '^[[:space:]]*(#|$)' "$ROOT/patches/debian-retires.conf")
+
 ROMS_PATCHES=$(grep -v -E '^[[:space:]]*(#|$)' "$ROOT/patches/series.roms")
 while p=$(quilt next 2>/dev/null); do
   p=${p#debian/patches/}
@@ -129,7 +137,7 @@ while p=$(quilt next 2>/dev/null); do
     sed -i "s|^${p}\$|#${p}  # déjà intégré dans $VERSION (samba-roms)|" debian/patches/series
   else
     cat "$WORK/quilt.log"
-    die "le patch Debian $p ne s'applique pas sur Samba $VERSION : choisir un autre donneur dans targets.conf"
+    die "le patch Debian $p ne s'applique pas sur Samba $VERSION : choisir un autre donneur dans targets.conf, ou l'ajouter à patches/debian-retires.conf s'il est déjà corrigé dans cette version"
   fi
 done
 quilt applied | sed 's/^/  appliqué : /'
