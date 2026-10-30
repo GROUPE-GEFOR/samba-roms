@@ -5,12 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dépôt APT samba-roms</title>
 <style>
-  :root { --bg: #fdfdfc; --fg: #1d1d1b; --muted: #5f5f5a; --code: #f1f0ec; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #1b1b1a; --fg: #ecebe6; --muted: #a5a49d; --code: #2a2a28; } }
+  :root { --bg: #fdfdfc; --fg: #1d1d1b; --muted: #5f5f5a; --code: #f1f0ec; --line: #e2e0d9;
+          --ok: #1d6b34; --ok-bg: #e2f2e6; --info: #1f5a96; --info-bg: #e3edf8;
+          --warn: #8a5a00; --warn-bg: #fbefd5; --bad: #9b2c22; --bad-bg: #f8e3e0; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1b1b1a; --fg: #ecebe6; --muted: #a5a49d; --code: #2a2a28; --line: #3a3a37;
+          --ok: #8fd6a2; --ok-bg: #1f3a27; --info: #9cc3ef; --info-bg: #1e3047;
+          --warn: #f0c46e; --warn-bg: #3d3018; --bad: #f2a299; --bad-bg: #452420; } }
   body { background: var(--bg); color: var(--fg); font: 16px/1.55 system-ui, sans-serif; max-width: 52rem; margin: 2rem auto; padding: 0 16px; }
   pre { background: var(--code); padding: .8rem 1rem; overflow-x: auto; border-radius: 6px; }
   code { font-family: ui-monospace, Consolas, monospace; font-size: .92em; }
-  p.muted { color: var(--muted); }
+  p.muted, .muted { color: var(--muted); }
+  .tableau { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: .95em; }
+  th, td { text-align: left; vertical-align: top; padding: .5rem .6rem; border-bottom: 1px solid var(--line); }
+  th { font-weight: 600; white-space: nowrap; }
+  td.branche { font-weight: 600; white-space: nowrap; }
+  .dist { display: inline-block; min-width: 5.5em; color: var(--muted); }
+  .statut { display: inline-block; padding: .05rem .5rem; border-radius: 999px; font-size: .88em; white-space: nowrap; background: var(--code); }
+  .statut.actuelle { background: var(--ok-bg); color: var(--ok); }
+  .statut.maintenance { background: var(--info-bg); color: var(--info); }
+  .statut.securite { background: var(--warn-bg); color: var(--warn); }
+  .statut.fin { background: var(--bad-bg); color: var(--bad); }
+  tr.avenir td { color: var(--muted); font-style: italic; }
+  .attente { color: var(--warn); font-size: .9em; }
 </style>
 </head>
 <body>
@@ -18,8 +35,11 @@
 <p>Paquets Samba « roms » (packaging Debian + patches roms) pour Debian 12 (bookworm) et Debian 13 (trixie), compilés par
 <a href="https://github.com/GROUPE-GEFOR/samba-roms">GROUPE-GEFOR/samba-roms</a>.</p>
 
+<h2>Versions</h2>
+@VERSIONS@
+
 <h2>Installation</h2>
-<p>Un composant par branche de Samba (<code>samba-4.22</code>, <code>samba-4.23</code>, <code>samba-4.24</code>) : un serveur ne suit que la branche choisie.</p>
+<p>Un composant par branche de Samba (colonne « Composant APT » ci-dessus) : un serveur ne suit que la branche choisie, et <code>apt upgrade</code> ne le fait jamais changer de branche.</p>
 <pre><code>BRANCHE=samba-4.22     # branche à suivre
 install -d /etc/apt/keyrings
 curl -fsSL https://groupe-gefor.github.io/samba-roms/samba-roms.gpg -o /etc/apt/keyrings/samba-roms.gpg

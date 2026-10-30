@@ -39,11 +39,20 @@ L'action **Veille des versions de Samba** ([`veille.yml`](.github/workflows/veil
 
 Les tickets mentionnent le compte indiqué dans la variable de dépôt `VEILLE_MENTION` (Settings → Secrets and variables → Actions → Variables). GitHub envoie donc un **e-mail** à ce compte.
 
-Pour un essai à blanc, qui affiche ce qui serait fait sans rien compiler :
+Pour un essai à blanc de la veille, qui affiche ce qui serait fait sans rien compiler ni publier :
 
 ```bash
 gh workflow run veille.yml -R GROUPE-GEFOR/samba-roms -f dry_run=true
 ```
+
+## Page du dépôt APT
+
+La page [groupe-gefor.github.io/samba-roms](https://groupe-gefor.github.io/samba-roms) liste automatiquement les branches de Samba :
+- **branches suivies** : statut Samba (actuelle, maintenance, sécurité seulement, fin de vie), dernière version upstream et sa date, et paquets roms publiés pour chaque distribution. Une version upstream pas encore publiée est signalée ;
+- **nouvelle branche** (ex. 4.26) : elle apparaît dès sa sortie, marquée « pas encore suivie » ;
+- **branche à venir** : la suivante, avec sa date de sortie probable (une branche tous les 6 mois environ).
+
+Elle est générée par [`scripts/page.sh`](scripts/page.sh) à partir de [`apt/index.html`](apt/index.html), à chaque publication et chaque jour après la veille (tâche `page` de `veille.yml`). Les mêmes données sont dans [`versions.json`](https://groupe-gefor.github.io/samba-roms/versions.json). Les dates sont celles des tarballs sur download.samba.org.
 
 ## Ce que fait l'action
 
@@ -68,7 +77,7 @@ Les patches tels qu'ils ont été appliqués (rafraîchis par quilt) se trouvent
 
 ## Installer sur un serveur
 
-Chaque branche de Samba a son propre composant : `samba-4.22`, `samba-4.23`, `samba-4.24` (et `samba-4.25` plus tard). Un serveur ne suit que la branche choisie, et `apt upgrade` ne le fait jamais passer à une autre. Pour changer de branche, il faut modifier `Components:` volontairement.
+Chaque branche de Samba a son propre composant : `samba-4.22`, `samba-4.23`, `samba-4.24`, `samba-4.25` (liste à jour sur la page du dépôt). Un serveur ne suit que la branche choisie, et `apt upgrade` ne le fait jamais passer à une autre. Pour changer de branche, il faut modifier `Components:` volontairement.
 
 ```bash
 BRANCHE=samba-4.22     # branche à suivre

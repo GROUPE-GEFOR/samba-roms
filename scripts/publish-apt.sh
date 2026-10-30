@@ -38,7 +38,8 @@ done
 
 gpg --export "$KEYID" > "$SITE/samba-roms.gpg"
 gpg --armor --export "$KEYID" > "$SITE/samba-roms.asc"
-cp "$ROOT/apt/index.html" "$SITE/index.html"
+# page d'accueil (versions) : si la génération échoue, la page précédente reste en place
+bash "$ROOT/scripts/page.sh" "$SITE" || echo "::warning::page d'accueil non régénérée"
 touch "$SITE/.nojekyll"
 {
   for dist in $(awk '/^Codename:/ {print $2}' "$ROOT/apt/distributions"); do

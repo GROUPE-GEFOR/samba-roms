@@ -35,3 +35,38 @@ jobs:
         run: gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/veille.yml/enable" || true
       - name: Veille
         run: bash scripts/veille.sh
+
+  # Page d'accueil du dépôt APT (versions existantes et à venir) : régénérée chaque jour, après les compilations.
+  page:
+    needs: veille
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      DRY_RUN: ${{ inputs.dry_run || false }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          ref: gh-pages
+          path: site
+      - name: Page du dépôt APT
+        run: |
+          bash scripts/page.sh site
+          cd site
+          # la ligne « Page mise à jour le … » change à chaque fois : elle ne compte pas
+          if git diff --quiet -I 'id="maj"' && [ -z "$(git ls-files --others --exclude-standard)" ]; then
+            echo "Page inchangée"; exit 0
+          fi
+          git --no-pager diff --stat
+          [ "$DRY_RUN" = true ] && { echo "Essai à blanc : page non publiée"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          old=$(git rev-parse HEAD)
+          # gh-pages garde un seul commit ; si une publication a eu lieu entre-temps, ne rien écraser
+          git add -A
+          git commit -q --amend --no-edit
+          git push -q --force-with-lease="gh-pages:$old" origin HEAD:gh-pages \
+            || echo "::warning::gh-pages a changé pendant la génération : page laissée à la publication suivante"
