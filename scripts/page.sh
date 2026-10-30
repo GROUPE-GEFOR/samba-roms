@@ -60,7 +60,7 @@ statut() {
   case $rang in
     1) echo "actuelle|actuelle" ;;
     2) echo "maintenance|maintenance" ;;
-    3) echo "securite|correctifs de sécurité uniquement" ;;
+    3) echo "securite|sécurité seulement" ;;
     "") echo "inconnue|?" ;;
     *) echo "fin|fin de vie" ;;
   esac
@@ -73,8 +73,12 @@ roms_version() {   # $1 distribution, $2 composant
   awk '/^Package: / {p = ($2 == "samba")} p && /^Version: / {print $2; exit}' "$f" | sed -E 's/^[0-9]+://; s/\+deb[0-9]+$//'
 }
 
+debian() { case $1 in bookworm) echo "Debian 12" ;; trixie) echo "Debian 13" ;; *) echo "$1" ;; esac; }
+date_court() { echo "${1:8:2}/${1:5:2}/${1:0:4}"; }   # 2026-10-30 -> 30/10/2026
+
 ROWS=""
 JSON=""
+OPTIONS=""        # « composant|libellé » des branches publiées, pour le choix de la branche à installer
 for b in $BRANCHES; do
   read -r v d <<< "$(up_latest "$b")"
   IFS='|' read -r st_code st_txt <<< "$(statut "$b")"
@@ -84,22 +88,39 @@ for b in $BRANCHES; do
   derniere="—"
   [ -n "$v" ] && derniere="<strong>$v</strong> du $(date_fr "$d")"
 
-  roms=""; jroms=""; manque=false
+  roms=""; jroms=""; manque=false; publiee=""
   if [ "$suivie" = true ]; then
+    # versions par distribution, regroupées quand elles sont identiques (cas habituel)
+    declare -A par_version=()
+    ordre=()
     for dist in $DISTS; do
       rv=$(roms_version "$dist" "$comp")
       jroms+="${jroms:+, }\"$dist\": \"$rv\""
-      if [ -n "$rv" ]; then
-        rel=$(echo "$RELEASES" | awk -v t="v$rv" '$1 == t {print $2; exit}')
-        roms+="<div><span class=\"dist\">$dist</span> <code>$rv</code>${rel:+ <span class=\"muted\">(publié le $(date_fr "$rel"))</span>}</div>"
-        [ "${rv%-roms-*}" = "$v" ] || manque=true
-      else
-        roms+="<div><span class=\"dist\">$dist</span> <span class=\"muted\">non publié</span></div>"
-        manque=true
-      fi
+      [ -n "$rv" ] || { manque=true; continue; }
+      [ "${rv%-roms-*}" = "$v" ] || manque=true
+      [ -n "${par_version[$rv]:-}" ] || ordre+=("$rv")
+      nom=$(debian "$dist")
+      case ${par_version[$rv]:-} in
+        "") par_version[$rv]=$nom ;;
+        Debian*) [ "${nom#Debian }" != "$nom" ] && par_version[$rv]+=" et ${nom#Debian }" || par_version[$rv]+=" et $nom" ;;   # Debian 12 et 13
+        *) par_version[$rv]+=" et $nom" ;;
+      esac
+      publiee=$rv
     done
+    for rv in "${ordre[@]}"; do
+      rel=$(echo "$RELEASES" | awk -v t="v$rv" '$1 == t {print $2; exit}')
+      roms+="<div><code>$rv</code> <span class=\"muted petit\">${par_version[$rv]}${rel:+ · publié le $(date_court "$rel")}</span></div>"
+    done
+    unset par_version
+    [ -n "$roms" ] || roms="<span class=\"muted\">non publié</span>"
     [ "$manque" = true ] && [ -n "$v" ] && roms+="<div class=\"attente\">$v : compilation en attente ou en échec</div>"
-    composant="<code>$comp</code>"
+    if [ -n "$publiee" ]; then
+      composant="<a href=\"#$comp\" title=\"Commandes d'installation pour cette branche\"><code>$comp</code></a>"
+      OPTIONS+="$comp|$b · $st_txt · $publiee
+"
+    else
+      composant="<code>$comp</code>"
+    fi
   else
     roms="<span class=\"muted\">nouvelle branche, pas encore suivie : compilation d'essai par la veille, sans publication</span>"
     composant="—"
@@ -107,7 +128,7 @@ for b in $BRANCHES; do
 
   libelle=$b
   [ "$b" = "$NEWEST" ] && [ -n "$v" ] && libelle="$b <span class=\"muted\">(actuelle $v)</span>"
-  ROWS+="<tr class=\"$st_code\"><td class=\"branche\">$libelle</td><td><span class=\"statut $st_code\">$st_txt</span></td><td>$derniere</td><td>$roms</td><td>$composant</td></tr>
+  ROWS+="<tr class=\"$st_code\"><td class=\"branche\">$libelle</td><td data-label=\"Statut\"><span class=\"statut $st_code\">$st_txt</span></td><td data-label=\"Samba\">$derniere</td><td data-label=\"Paquets roms\">$roms</td><td data-label=\"Composant\">$composant</td></tr>
 "
   JSON+="${JSON:+,
 }    {\"branche\": \"$b\", \"statut\": \"$st_txt\", \"suivie\": $suivie, \"derniere\": \"$v\", \"date\": \"$d\", \"composant\": \"$jcomp\", \"roms\": {${jroms}}}"
@@ -119,12 +140,24 @@ next="$maj.$((min + 1))"
 d0=$(up_date "$NEWEST.0")
 attendue=""
 [ -n "$d0" ] && attendue=$(date -u -d "$d0 +6 months" +%Y-%m)
-ROWS+="<tr class=\"avenir\"><td class=\"branche\">$next</td><td><span class=\"statut avenir\">à venir</span></td><td>${attendue:+attendue vers $(mois_fr "$attendue")}</td><td class=\"muted\">compilation d'essai automatique dès sa sortie, puis ticket d'information</td><td>—</td></tr>
+ROWS+="<tr class=\"avenir\"><td class=\"branche\">$next</td><td data-label=\"Statut\"><span class=\"statut avenir\">à venir</span></td><td data-label=\"Samba\">${attendue:+attendue vers $(mois_fr "$attendue")}</td><td data-label=\"Paquets roms\">compilation d'essai automatique dès sa sortie, puis ticket d'information</td><td data-label=\"Composant\">—</td></tr>
 "
 JSON+=",
     {\"branche\": \"$next\", \"statut\": \"à venir\", \"suivie\": false, \"attendue\": \"$attendue\"}"
 
-TABLE="$SITE/.versions.html"
+# choix de la branche à installer : par défaut la plus récente publiée (dernière stable)
+[ -n "$OPTIONS" ] || { echo "::error::aucune branche publiée dans le dépôt APT" >&2; exit 1; }
+DEFAUT=$(echo "$OPTIONS" | awk -F'|' 'NF {c = $1} END {print c}')
+{
+  echo '<select id="branche">'
+  echo "$OPTIONS" | sort -t'|' -k1,1rV | while IFS='|' read -r c l; do
+    [ -n "$c" ] || continue
+    echo "    <option value=\"$c\"$([ "$c" = "$DEFAUT" ] && echo ' selected')>$l</option>"
+  done
+  echo '  </select>'
+} > "$SITE/.CHOIX.html"
+
+TABLE="$SITE/.VERSIONS.html"
 cat > "$TABLE" <<EOF
 <div class="tableau"><table>
 <thead><tr><th>Branche</th><th>Statut Samba</th><th>Dernière version Samba</th><th>Paquets roms publiés</th><th>Composant APT</th></tr></thead>
@@ -133,8 +166,11 @@ $ROWS</tbody>
 </table></div>
 <p class="muted" id="maj">Page mise à jour le $(date_fr "$(date -u +%F)") à $(date -u +%H:%M) UTC. Statut selon le cycle de Samba (<a href="https://wiki.samba.org/index.php/Samba_Release_Planning">Samba Release Planning</a>) : trois branches maintenues, l'actuelle, la précédente en maintenance et l'avant-dernière pour la sécurité seulement.</p>
 EOF
-awk -v f="$TABLE" '/@VERSIONS@/ { while ((getline l < f) > 0) print l; next } { print }' "$ROOT/apt/index.html" > "$SITE/index.html"
-rm -f "$TABLE"
+# @VERSIONS@ et @CHOIX@ (lignes entières) : remplacés par .VERSIONS.html et .CHOIX.html ; @DEFAUT@ : branche par défaut
+awk -v dir="$SITE" -v defaut="$DEFAUT" '
+  match($0, /@(VERSIONS|CHOIX)@/) { f = dir "/." substr($0, RSTART + 1, RLENGTH - 2) ".html"; while ((getline l < f) > 0) print l; close(f); next }
+  { gsub(/@DEFAUT@/, defaut); print }' "$ROOT/apt/index.html" > "$SITE/index.html"
+rm -f "$SITE/.VERSIONS.html" "$SITE/.CHOIX.html"
 
 printf '{\n  "branches": [\n%s\n  ]\n}\n' "$JSON" > "$SITE/versions.json"
 echo "Page générée : $(echo $BRANCHES) + $next à venir"

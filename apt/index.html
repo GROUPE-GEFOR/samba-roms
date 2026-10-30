@@ -28,6 +28,21 @@
   .statut.fin { background: var(--bad-bg); color: var(--bad); }
   tr.avenir td { color: var(--muted); font-style: italic; }
   .attente { color: var(--warn); font-size: .9em; }
+  .petit { font-size: .88em; }
+  .choix { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; margin: 1rem 0 .5rem; }
+  .choix label { font-weight: 600; }
+  select, button { font: inherit; color: var(--fg); background: var(--code); border: 1px solid var(--line); border-radius: 6px; padding: .35rem .7rem; }
+  button { cursor: pointer; background: var(--info-bg); color: var(--info); font-weight: 600; }
+  button:hover { filter: brightness(.96); }
+  select:focus-visible, button:focus-visible { outline: 2px solid var(--info); outline-offset: 2px; }
+  /* écran étroit : une carte par branche */
+  @media (max-width: 640px) {
+    thead { display: none; }
+    tr { display: block; padding: .6rem 0; border-bottom: 1px solid var(--line); }
+    td { display: block; border: 0; padding: .15rem 0; }
+    td[data-label]::before { content: attr(data-label) " : "; color: var(--muted); }
+    td.branche { font-size: 1.1em; }
+  }
 </style>
 </head>
 <body>
@@ -38,9 +53,15 @@
 <h2>Versions</h2>
 @VERSIONS@
 
-<h2>Installation</h2>
-<p>Un composant par branche de Samba (colonne « Composant APT » ci-dessus) : un serveur ne suit que la branche choisie, et <code>apt upgrade</code> ne le fait jamais changer de branche.</p>
-<pre><code>BRANCHE=samba-4.22     # branche à suivre
+<h2 id="installation">Installation</h2>
+<p>Un composant par branche de Samba : un serveur ne suit que la branche choisie, et <code>apt upgrade</code> ne le fait jamais changer de branche. Commandes à lancer en root sur le serveur :</p>
+<div class="choix">
+  <label for="branche">Branche</label>
+  @CHOIX@
+  <button type="button" id="copier">Copier les commandes</button>
+  <span id="copie" class="muted" aria-live="polite"></span>
+</div>
+<pre><code id="commandes">BRANCHE=@DEFAUT@     # branche à suivre
 install -d /etc/apt/keyrings
 curl -fsSL https://groupe-gefor.github.io/samba-roms/samba-roms.gpg -o /etc/apt/keyrings/samba-roms.gpg
 
@@ -58,9 +79,52 @@ Pin: release o=samba-roms
 Pin-Priority: 1001
 EOF
 
-apt update</code></pre>
+apt update &amp;&amp; apt list --upgradable</code></pre>
 
-<p><a href="paquets.txt">Liste des paquets publiés</a> · <a href="samba-roms.asc">clé publique (ASCII)</a></p>
-<p class="muted">Les paquets de débogage (-dbgsym) sont dans les Releases GitHub du dépôt.</p>
+<p><a href="paquets.txt">Liste des paquets publiés</a> · <a href="versions.json">versions.json</a> · <a href="samba-roms.asc">clé publique (ASCII)</a></p>
+<p class="muted">Les paquets de débogage (-dbgsym) et les versions précédentes sont dans les <a href="https://github.com/GROUPE-GEFOR/samba-roms/releases">Releases GitHub</a>.</p>
+<script>
+(function () {
+  var sel = document.getElementById('branche'), code = document.getElementById('commandes'),
+      btn = document.getElementById('copier'), msg = document.getElementById('copie'), minuterie;
+  if (!sel || !code) return;
+  var modele = code.textContent;
+  function afficher() { code.textContent = modele.replace(/^BRANCHE=\S+/m, 'BRANCHE=' + sel.value); }
+  function choisir(valeur) {
+    for (var i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].value === valeur) { sel.selectedIndex = i; afficher(); return true; }
+    }
+    return false;
+  }
+  function message(texte) {
+    msg.textContent = texte;
+    clearTimeout(minuterie);
+    minuterie = setTimeout(function () { msg.textContent = ''; }, 3000);
+  }
+  function copierSelection() {
+    var r = document.createRange(), s = window.getSelection();
+    r.selectNodeContents(code); s.removeAllRanges(); s.addRange(r);
+    try { document.execCommand('copy') ? message('Commandes copiées') : message('Texte sélectionné : Ctrl+C pour copier'); }
+    catch (e) { message('Texte sélectionné : Ctrl+C pour copier'); }
+  }
+  sel.addEventListener('change', function () {
+    afficher();
+    if (history.replaceState) history.replaceState(null, '', '#' + sel.value);
+  });
+  btn.addEventListener('click', function () {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(code.textContent).then(function () { message('Commandes copiées'); }, copierSelection);
+    } else {
+      copierSelection();
+    }
+  });
+  // lien direct vers une branche (#samba-4.22), aussi utilisé par les liens du tableau
+  function depuisAncre() {
+    if (choisir(decodeURIComponent(location.hash.slice(1)))) document.getElementById('installation').scrollIntoView();
+  }
+  window.addEventListener('hashchange', depuisAncre);
+  if (location.hash) depuisAncre();
+})();
+</script>
 </body>
 </html>

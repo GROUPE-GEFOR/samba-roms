@@ -52,6 +52,8 @@ La page [groupe-gefor.github.io/samba-roms](https://groupe-gefor.github.io/samba
 - **nouvelle branche** (ex. 4.26) : elle apparaît dès sa sortie, marquée « pas encore suivie » ;
 - **branche à venir** : la suivante, avec sa date de sortie probable (une branche tous les 6 mois environ).
 
+Sa partie **Installation** propose un choix de branche (par défaut la plus récente publiée) qui met à jour les commandes, et un bouton **Copier les commandes** pour les coller dans le terminal du serveur. Les liens de la colonne « Composant APT » sélectionnent la branche ; un lien direct comme `https://groupe-gefor.github.io/samba-roms/#samba-4.22` ouvre la page avec la branche choisie.
+
 Elle est générée par [`scripts/page.sh`](scripts/page.sh) à partir de [`apt/index.html`](apt/index.html), à chaque publication et chaque jour après la veille (tâche `page` de `veille.yml`). Les mêmes données sont dans [`versions.json`](https://groupe-gefor.github.io/samba-roms/versions.json). Les dates sont celles des tarballs sur download.samba.org.
 
 ## Ce que fait l'action
