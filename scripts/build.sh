@@ -28,9 +28,17 @@ esac
 log() { echo; echo "===== $* ====="; }
 die() { echo "::error::$*" >&2; exit 1; }
 
-# --- cible dans targets.conf
-read -r _ _ DONOR PROFILES EXTRA_SUITE < <(awk -v b="$BRANCH" -v d="$DIST" '$1==b && $2==d' "$ROOT/targets.conf") \
-  || die "aucune ligne « $BRANCH $DIST » dans targets.conf"
+# --- cible dans targets.conf ; une branche absente (nouvelle branche de Samba) reprend la
+#     configuration de la branche précédente la plus proche (essai, signalé par un avertissement)
+CONF_BRANCH=$BRANCH
+if ! awk -v b="$BRANCH" -v d="$DIST" '$1==b && $2==d {f=1} END {exit !f}' "$ROOT/targets.conf"; then
+  CONF_BRANCH=$( { awk -v d="$DIST" '!/^#/ && $2==d {print $1}' "$ROOT/targets.conf"; echo "$BRANCH"; } \
+                 | sort -uV | grep -B1 -xF "$BRANCH" | head -1)
+  [ "$CONF_BRANCH" != "$BRANCH" ] || die "aucune branche antérieure à $BRANCH pour $DIST dans targets.conf"
+  echo "::warning::branche $BRANCH absente de targets.conf : essai avec la configuration de la branche $CONF_BRANCH"
+fi
+read -r _ _ DONOR PROFILES EXTRA_SUITE < <(awk -v b="$CONF_BRANCH" -v d="$DIST" '$1==b && $2==d' "$ROOT/targets.conf") \
+  || die "aucune ligne « $CONF_BRANCH $DIST » dans targets.conf"
 [ -n "$DONOR_OVERRIDE" ] && DONOR=$DONOR_OVERRIDE
 [ "$PROFILES" = "-" ] && PROFILES=""
 [ "$EXTRA_SUITE" = "-" ] && EXTRA_SUITE=""

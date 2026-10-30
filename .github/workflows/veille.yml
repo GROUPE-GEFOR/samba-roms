@@ -1,0 +1,37 @@
+name: Veille des versions de Samba
+
+on:
+  schedule:
+    - cron: "17 5 * * *"     # chaque jour à 05h17 UTC
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Essai à blanc : afficher ce qui serait fait, sans compiler ni créer de ticket"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: write     # lancer build.yml et garder la veille active
+  issues: write      # tickets d'information (notifiés par e-mail)
+
+concurrency:
+  group: veille
+  cancel-in-progress: false
+
+jobs:
+  veille:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VEILLE_MENTION: ${{ vars.VEILLE_MENTION }}
+      DRY_RUN: ${{ inputs.dry_run || false }}
+    steps:
+      - uses: actions/checkout@v7
+      # GitHub désactive les tâches planifiées d'un dépôt public sans activité depuis 60 jours :
+      # réactiver la veille à chaque exécution remet ce délai à zéro.
+      - name: Garder la veille active
+        run: gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/veille.yml/enable" || true
+      - name: Veille
+        run: bash scripts/veille.sh

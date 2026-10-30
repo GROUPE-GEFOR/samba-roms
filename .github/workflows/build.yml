@@ -1,4 +1,6 @@
 name: Compilation Samba roms
+# Titre de chaque exécution : utilisé par la veille (veille.yml) pour retrouver une compilation
+run-name: "Samba ${{ inputs.samba_version }}-roms-${{ inputs.roms_rev }} (${{ inputs.targets }})${{ !inputs.publish && ' sans publication' || '' }}"
 
 on:
   workflow_dispatch:

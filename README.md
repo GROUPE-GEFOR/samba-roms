@@ -27,6 +27,24 @@ Paquets produits : `2:<version>-roms-<révision>+deb12` (bookworm) et `+deb13` (
 - `+deb13` est supérieur à `+deb12` : le passage d'un serveur en Debian 13 remplace le paquet bookworm par le paquet trixie.
 - ldb, talloc, tdb et tevent sont compilés avec Samba (ex. `libldb2 2:2.11.0+samba4.22.4-roms-3+deb12`).
 
+## Veille automatique des versions
+
+L'action **Veille des versions de Samba** ([`veille.yml`](.github/workflows/veille.yml), script [`scripts/veille.sh`](scripts/veille.sh)) tourne chaque jour à 05h17 UTC :
+
+- **Branches suivies**, c'est-à-dire celles de [`targets.conf`](targets.conf) (4.22 à 4.25) : si upstream publie une version plus récente que la dernière Release, la veille lance la compilation **avec publication**, pour Debian 12 et 13. Les compilations passent l'une après l'autre.
+- **Nouvelle branche** (4.26 ou plus) :
+  - compilation d'essai **sans publication**, avec la configuration (packaging Debian, profils) de la branche suivie la plus récente ;
+  - puis un ticket « Nouvelle branche Samba 4.26 (4.26.x) » donne le résultat et les étapes pour suivre cette branche.
+- **Échec d'une compilation automatique** : un ticket « Échec de compilation de Samba x.y.z » est créé, une seule fois tant qu'il reste ouvert. La veille ne relance pas une version en échec : il faut la corriger, puis relancer la compilation à la main.
+
+Les tickets mentionnent le compte indiqué dans la variable de dépôt `VEILLE_MENTION` (Settings → Secrets and variables → Actions → Variables). GitHub envoie donc un **e-mail** à ce compte.
+
+Pour un essai à blanc, qui affiche ce qui serait fait sans rien compiler :
+
+```bash
+gh workflow run veille.yml -R GROUPE-GEFOR/samba-roms -f dry_run=true
+```
+
 ## Ce que fait l'action
 
 1. **Compilation** ([`scripts/build.sh`](scripts/build.sh)), dans un conteneur `debian:<distribution>` :
