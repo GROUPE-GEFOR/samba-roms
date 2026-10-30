@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dépôt APT samba-roms</title>
+<style>
+  :root { --bg: #fdfdfc; --fg: #1d1d1b; --muted: #5f5f5a; --code: #f1f0ec; --line: #e2e0d9;
+          --ok: #1d6b34; --ok-bg: #e2f2e6; --info: #1f5a96; --info-bg: #e3edf8;
+          --warn: #8a5a00; --warn-bg: #fbefd5; --bad: #9b2c22; --bad-bg: #f8e3e0; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1b1b1a; --fg: #ecebe6; --muted: #a5a49d; --code: #2a2a28; --line: #3a3a37;
+          --ok: #8fd6a2; --ok-bg: #1f3a27; --info: #9cc3ef; --info-bg: #1e3047;
+          --warn: #f0c46e; --warn-bg: #3d3018; --bad: #f2a299; --bad-bg: #452420; } }
+  body { background: var(--bg); color: var(--fg); font: 16px/1.55 system-ui, sans-serif; max-width: 52rem; margin: 2rem auto; padding: 0 16px; }
+  pre { background: var(--code); padding: .8rem 1rem; overflow-x: auto; border-radius: 6px; }
+  code { font-family: ui-monospace, Consolas, monospace; font-size: .92em; }
+  p.muted, .muted { color: var(--muted); }
+  .tableau { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: .95em; }
+  th, td { text-align: left; vertical-align: top; padding: .5rem .6rem; border-bottom: 1px solid var(--line); }
+  th { font-weight: 600; white-space: nowrap; }
+  td.branche { font-weight: 600; white-space: nowrap; }
+  .dist { display: inline-block; min-width: 5.5em; color: var(--muted); }
+  .statut { display: inline-block; padding: .05rem .5rem; border-radius: 999px; font-size: .88em; white-space: nowrap; background: var(--code); }
+  .statut.actuelle { background: var(--ok-bg); color: var(--ok); }
+  .statut.maintenance { background: var(--info-bg); color: var(--info); }
+  .statut.securite { background: var(--warn-bg); color: var(--warn); }
+  .statut.fin { background: var(--bad-bg); color: var(--bad); }
+  tr.avenir td { color: var(--muted); font-style: italic; }
+  .attente { color: var(--warn); font-size: .9em; }
+  .petit { font-size: .88em; }
+  .choix { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; margin: 1rem 0 .5rem; }
+  .choix label { font-weight: 600; }
+  .choix select { max-width: 100%; min-width: 0; }
+  select, button { font: inherit; color: var(--fg); background: var(--code); border: 1px solid var(--line); border-radius: 6px; padding: .35rem .7rem; }
+  button { cursor: pointer; background: var(--info-bg); color: var(--info); font-weight: 600; }
+  button:hover { filter: brightness(.96); }
+  select:focus-visible, button:focus-visible { outline: 2px solid var(--info); outline-offset: 2px; }
+  /* écran étroit : une carte par branche */
+  @media (max-width: 640px) {
+    thead { display: none; }
+    tr { display: block; padding: .6rem 0; border-bottom: 1px solid var(--line); }
+    td { display: block; border: 0; padding: .15rem 0; }
+    td[data-label]::before { content: attr(data-label) " : "; color: var(--muted); }
+    td.branche { font-size: 1.1em; }
+  }
+</style>
+</head>
+<body>
+<h1>Dépôt APT samba-roms</h1>
+<p>Paquets Samba « roms » (packaging Debian + patches roms) pour Debian 12 (bookworm) et Debian 13 (trixie), compilés par
+<a href="https://github.com/GROUPE-GEFOR/samba-roms">GROUPE-GEFOR/samba-roms</a>.</p>
+
+<h2>Versions</h2>
+<div class="tableau"><table>
+<thead><tr><th>Branche</th><th>Statut Samba</th><th>Dernière version Samba</th><th>Paquets roms publiés</th><th>Composant APT</th></tr></thead>
+<tbody>
+<tr class="fin"><td class="branche">4.22</td><td data-label="Statut"><span class="statut fin">fin de vie</span></td><td data-label="Samba"><strong>4.22.11</strong> du 22 juillet 2026</td><td data-label="Paquets roms"><div><code>4.22.11-roms-1</code> <span class="muted petit">Debian 12 et 13 · publié le 21/10/2026</span></div></td><td data-label="Composant"><a href="#samba-4.22" title="Commandes d'installation pour cette branche"><code>samba-4.22</code></a></td></tr>
+<tr class="securite"><td class="branche">4.23</td><td data-label="Statut"><span class="statut securite">sécurité seulement</span></td><td data-label="Samba"><strong>4.23.13</strong> du 1er octobre 2026</td><td data-label="Paquets roms"><div><code>4.23.13-roms-1</code> <span class="muted petit">Debian 12 et 13 · publié le 21/10/2026</span></div></td><td data-label="Composant"><a href="#samba-4.23" title="Commandes d'installation pour cette branche"><code>samba-4.23</code></a></td></tr>
+<tr class="maintenance"><td class="branche">4.24</td><td data-label="Statut"><span class="statut maintenance">maintenance</span></td><td data-label="Samba"><strong>4.24.8</strong> du 12 octobre 2026</td><td data-label="Paquets roms"><div><code>4.24.8-roms-1</code> <span class="muted petit">Debian 12 et 13 · publié le 21/10/2026</span></div></td><td data-label="Composant"><a href="#samba-4.24" title="Commandes d'installation pour cette branche"><code>samba-4.24</code></a></td></tr>
+<tr class="actuelle"><td class="branche">4.25 <span class="muted">(actuelle 4.25.1)</span></td><td data-label="Statut"><span class="statut actuelle">actuelle</span></td><td data-label="Samba"><strong>4.25.1</strong> du 23 octobre 2026</td><td data-label="Paquets roms"><div><code>4.25.1-roms-1</code> <span class="muted petit">Debian 12 et 13 · publié le 30/10/2026</span></div></td><td data-label="Composant"><a href="#samba-4.25" title="Commandes d'installation pour cette branche"><code>samba-4.25</code></a></td></tr>
+<tr class="avenir"><td class="branche">4.26</td><td data-label="Statut"><span class="statut avenir">à venir</span></td><td data-label="Samba">attendue vers mars 2027</td><td data-label="Paquets roms">compilation d'essai automatique dès sa sortie, puis ticket d'information</td><td data-label="Composant">—</td></tr>
+</tbody>
+</table></div>
+<p class="muted" id="maj">Page mise à jour le 30 octobre 2026 à 21:08 UTC. Statut selon le cycle de Samba (<a href="https://wiki.samba.org/index.php/Samba_Release_Planning">Samba Release Planning</a>) : trois branches maintenues, l'actuelle, la précédente en maintenance et l'avant-dernière pour la sécurité seulement.</p>
+
+<h2 id="installation">Installation</h2>
+<p>Un composant par branche de Samba : un serveur ne suit que la branche choisie, et <code>apt upgrade</code> ne le fait jamais changer de branche. Commandes à lancer en root sur le serveur :</p>
+<div class="choix">
+  <label for="branche">Branche</label>
+<select id="branche">
+    <option value="samba-4.25" selected>4.25 · actuelle · 4.25.1-roms-1</option>
+    <option value="samba-4.24">4.24 · maintenance · 4.24.8-roms-1</option>
+    <option value="samba-4.23">4.23 · sécurité seulement · 4.23.13-roms-1</option>
+    <option value="samba-4.22">4.22 · fin de vie · 4.22.11-roms-1</option>
+  </select>
+  <button type="button" id="copier">Copier les commandes</button>
+  <span id="copie" class="muted" aria-live="polite"></span>
+</div>
+<pre><code id="commandes">BRANCHE=samba-4.25     # branche à suivre
+install -d /etc/apt/keyrings
+curl -fsSL https://groupe-gefor.github.io/samba-roms/samba-roms.gpg -o /etc/apt/keyrings/samba-roms.gpg
+
+cat &gt; /etc/apt/sources.list.d/samba-roms.sources &lt;&lt;EOF
+Types: deb
+URIs: https://groupe-gefor.github.io/samba-roms
+Suites: $(. /etc/os-release; echo $VERSION_CODENAME)
+Components: $BRANCHE
+Signed-By: /etc/apt/keyrings/samba-roms.gpg
+EOF
+
+cat &gt; /etc/apt/preferences.d/samba-roms &lt;&lt;EOF
+Package: *
+Pin: release o=samba-roms
+Pin-Priority: 1001
+EOF
+
+apt update &amp;&amp; apt list --upgradable</code></pre>
+
+<p><a href="paquets.txt">Liste des paquets publiés</a> · <a href="versions.json">versions.json</a> · <a href="samba-roms.asc">clé publique (ASCII)</a></p>
+<p class="muted">Les paquets de débogage (-dbgsym) et les versions précédentes sont dans les <a href="https://github.com/GROUPE-GEFOR/samba-roms/releases">Releases GitHub</a>.</p>
+<script>
+(function () {
+  var sel = document.getElementById('branche'), code = document.getElementById('commandes'),
+      btn = document.getElementById('copier'), msg = document.getElementById('copie'), minuterie;
+  if (!sel || !code) return;
+  var modele = code.textContent;
+  function afficher() { code.textContent = modele.replace(/^BRANCHE=\S+/m, 'BRANCHE=' + sel.value); }
+  function choisir(valeur) {
+    for (var i = 0; i < sel.options.length; i++) {
+      if (sel.options[i].value === valeur) { sel.selectedIndex = i; afficher(); return true; }
+    }
+    return false;
+  }
+  function message(texte) {
+    msg.textContent = texte;
+    clearTimeout(minuterie);
+    minuterie = setTimeout(function () { msg.textContent = ''; }, 3000);
+  }
+  function copierSelection() {
+    var r = document.createRange(), s = window.getSelection();
+    r.selectNodeContents(code); s.removeAllRanges(); s.addRange(r);
+    try { document.execCommand('copy') ? message('Commandes copiées') : message('Texte sélectionné : Ctrl+C pour copier'); }
+    catch (e) { message('Texte sélectionné : Ctrl+C pour copier'); }
+  }
+  sel.addEventListener('change', function () {
+    afficher();
+    if (history.replaceState) history.replaceState(null, '', '#' + sel.value);
+  });
+  btn.addEventListener('click', function () {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(code.textContent).then(function () { message('Commandes copiées'); }, copierSelection);
+    } else {
+      copierSelection();
+    }
+  });
+  // lien direct vers une branche (#samba-4.22), aussi utilisé par les liens du tableau
+  function depuisAncre() {
+    if (choisir(decodeURIComponent(location.hash.slice(1)))) document.getElementById('installation').scrollIntoView();
+  }
+  window.addEventListener('hashchange', depuisAncre);
+  if (location.hash) depuisAncre();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "branches": [
+    {"branche": "4.22", "statut": "fin de vie", "suivie": true, "derniere": "4.22.11", "date": "2026-07-22", "composant": "samba-4.22", "roms": {"bookworm": "4.22.11-roms-1", "trixie": "4.22.11-roms-1"}},
+    {"branche": "4.23", "statut": "sécurité seulement", "suivie": true, "derniere": "4.23.13", "date": "2026-10-01", "composant": "samba-4.23", "roms": {"bookworm": "4.23.13-roms-1", "trixie": "4.23.13-roms-1"}},
+    {"branche": "4.24", "statut": "maintenance", "suivie": true, "derniere": "4.24.8", "date": "2026-10-12", "composant": "samba-4.24", "roms": {"bookworm": "4.24.8-roms-1", "trixie": "4.24.8-roms-1"}},
+    {"branche": "4.25", "statut": "actuelle", "suivie": true, "derniere": "4.25.1", "date": "2026-10-23", "composant": "samba-4.25", "roms": {"bookworm": "4.25.1-roms-1", "trixie": "4.25.1-roms-1"}},
+    {"branche": "4.26", "statut": "à venir", "suivie": false, "attendue": "2027-03"}
+  ]
+}
