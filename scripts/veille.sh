@@ -79,6 +79,7 @@ done
 for b in $(echo "$LIST" | sed -E 's/\.[0-9]+$//' | sort -uV); do
   newer "$b" "$MAX_FOLLOWED" || continue
   v=$(latest_of "$b")
+  [ -n "$v" ] || continue          # pas de version stable x.y.z dans cette branche
   st=$(run_state "$v")
   if [ "$st" = aucune ]; then
     echo "nouvelle branche $b ($v) : compilation d'essai"
